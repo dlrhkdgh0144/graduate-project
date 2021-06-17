@@ -43,6 +43,22 @@ export default {
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
+    [
+      '@nuxtjs/firebase',
+      {
+        config: {
+          apiKey: "AIzaSyA5ECvUolkzaBVLRzH1RB2oZ3r8ytPSz3A",
+          authDomain: "intern-2106.firebaseapp.com",
+          projectId: "intern-2106",
+          storageBucket: "intern-2106.appspot.com",
+          messagingSenderId: "758980168580",
+          appId: "1:758980168580:web:d81ff4f0f7052ae9e86bd1"
+        },
+        services: {
+          auth: true // Just as example. Can be any other service.
+        }
+      }
+    ]
   ],
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
