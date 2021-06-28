@@ -52,10 +52,13 @@ export default {
     this.files = querySnapshot.docs;
   },
   methods: {
-    onSave() {
+    async onSave() {
       this.$fire.firestore.doc(`users/${this.$fire.auth.currentUser.uid}`).update({name: this.name}).then(() => {
         console.log('saved!');
       })
+      await this.$fire.firestore.collection(`users/${this.$fire.auth.currentUser.uid}/files`).add({name: `test${this.files.length}`});
+      const querySnapshot = await this.$fire.firestore.doc(`users/${this.$fire.auth.currentUser.uid}`).collection('files').get();
+      this.files = querySnapshot.docs;
     }
   }
 };
