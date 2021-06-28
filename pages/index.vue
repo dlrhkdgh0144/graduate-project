@@ -13,7 +13,7 @@
         <v-btn @click="onSave" v-html="`저장`" light/>
 
         <template v-for="file of files">
-          <li>{{ file.data().name }}</li>
+          <li @click="removeFile(file)" >{{ file.data().name }}</li>
         </template>
       </div>
     </v-col>
@@ -38,7 +38,7 @@ export default {
       files: [],
     };
   },
-  async mounted() {
+  mounted() {
     console.log('USER UID: ', this.$fire.auth.currentUser.uid);
     this.$fire.firestore.doc(`users/${this.$fire.auth.currentUser.uid}`).get().then(docSnap => {
       if (docSnap.exists) {
@@ -48,18 +48,30 @@ export default {
         console.log('');
       }
     });
-    const querySnapshot = await this.$fire.firestore.doc(`users/${this.$fire.auth.currentUser.uid}`).collection('files').get();
-    this.files = querySnapshot.docs;
+    this.$fire.firestore.doc(`users/${this.$fire.auth.currentUser.uid}`).
+    collection('files').orderBy('name').onSnapshot((querySnapshot => {
+      console.log(querySnapshot.docs.length);
+      this.files = querySnapshot.docs;
+    }));
   },
   methods: {
     async onSave() {
-      this.$fire.firestore.doc(`users/${this.$fire.auth.currentUser.uid}`).update({name: this.name}).then(() => {
+      // this.$fire.firestore.doc(`users/${this.$fire.auth.currentUser.uid}`).update({name: this.name}).then(() => {
+      //   console.log('saved!');
+      // })
+      this.$fire.firestore.doc(`users/${this.$fire.auth.currentUser.uid}`).
+      set({name: this.name}, {merge: true}).
+      then(() => {
         console.log('saved!');
-      })
-      await this.$fire.firestore.collection(`users/${this.$fire.auth.currentUser.uid}/files`).add({name: `test${this.files.length}`});
-      const querySnapshot = await this.$fire.firestore.doc(`users/${this.$fire.auth.currentUser.uid}`).collection('files').get();
-      this.files = querySnapshot.docs;
+      });
+
+      await this.$fire.firestore.collection(`users/${this.$fire.auth.currentUser.uid}/files`).
+      add({name: `test${this.files.length}`});
+    },
+    async removeFile(file) {
+      console.log('file: ', file.id);
+      await this.$fire.firestore.doc(`users/${this.$fire.auth.currentUser.uid}/files/${file.id}`).delete();
     }
-  }
+  },
 };
 </script>
