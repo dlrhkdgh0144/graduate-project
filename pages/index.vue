@@ -6,6 +6,16 @@
         <vuetify-logo/>
       </div>
       <Auth/>
+      <div style="padding: 30px;background-color: white;color: black;">
+        name: {{ name }}<br>
+        description: {{ description }}
+        <v-text-field v-model="name" light/>
+        <v-btn @click="onSave" v-html="`저장`" light/>
+
+        <template v-for="file of files">
+          <li>{{ file.data().name }}</li>
+        </template>
+      </div>
     </v-col>
   </v-row>
 </template>
@@ -21,5 +31,32 @@ export default {
     VuetifyLogo,
     Auth,
   },
+  data() {
+    return {
+      description: '',
+      name: '',
+      files: [],
+    };
+  },
+  async mounted() {
+    console.log('USER UID: ', this.$fire.auth.currentUser.uid);
+    this.$fire.firestore.doc(`users/${this.$fire.auth.currentUser.uid}`).get().then(docSnap => {
+      if (docSnap.exists) {
+        this.name = docSnap.data().name;
+        this.description = docSnap.data().description;
+      } else {
+        console.log('');
+      }
+    });
+    const querySnapshot = await this.$fire.firestore.doc(`users/${this.$fire.auth.currentUser.uid}`).collection('files').get();
+    this.files = querySnapshot.docs;
+  },
+  methods: {
+    onSave() {
+      this.$fire.firestore.doc(`users/${this.$fire.auth.currentUser.uid}`).update({name: this.name}).then(() => {
+        console.log('saved!');
+      })
+    }
+  }
 };
 </script>
