@@ -12,8 +12,8 @@ export default {
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    titleTemplate: '%s - intern-2106',
-    title: 'intern-2106',
+    titleTemplate: '%s - graduate-project',
+    title: 'title',
     htmlAttrs: {
       lang: 'en',
     },
@@ -54,12 +54,13 @@ export default {
   firebase: {
     lazy: true,
     config: {
-      apiKey: 'AIzaSyA5ECvUolkzaBVLRzH1RB2oZ3r8ytPSz3A',
-      authDomain: 'intern-2106.firebaseapp.com',
-      projectId: 'intern-2106',
-      storageBucket: 'intern-2106.appspot.com',
-      messagingSenderId: '758980168580',
-      appId: '1:758980168580:web:d81ff4f0f7052ae9e86bd1',
+      apiKey: "AIzaSyCLuZkMhInOiO0SftbT2IOZXdsVZRy21oM",
+      authDomain: "graduate-project-c6cc3.firebaseapp.com",
+      projectId: "graduate-project-c6cc3",
+      storageBucket: "graduate-project-c6cc3.appspot.com",
+      messagingSenderId: "18433129151",
+      appId: "1:18433129151:web:55e8200a5c1c387301240a",
+      measurementId: "G-T82RCZ0QD2"
     },
     onFirebaseHosting: false,
     terminateDatabasesAfterGenerate: true,
