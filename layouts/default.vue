@@ -117,8 +117,8 @@ export default {
         },
         {
           icon: 'mdi-chart-bubble',
-          title: 'Inspire',
-          to: '/inspire'
+          title: 'Board',
+          to: '/board'
         },
         {
           icon: 'mdi-account',
