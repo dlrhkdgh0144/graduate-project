@@ -41,9 +41,11 @@ export default {
       filename: '',
       description: '',
       writer: '',
+      path: '',
       timestamp: '',
     },
     fileObj : null,
+    isUploading : false,
   }),
   mounted() {
     if(!this.$fire.auth.currentUser){
@@ -54,34 +56,80 @@ export default {
   methods: {
     onFileSelect(file){
       this.fileObj = file;
+      this.formData.filename = this.fileObj.name;
+      console.log(this.fileObj);
     },
     async uploadPost(){
       this.formData.timestamp = this.$fireModule.firestore.FieldValue.serverTimestamp();
 
       // const AWS = require('aws-sdk');
-      // const fs = require('fs');
+      // //const fs = require('fs');
       // const s3 = new AWS.S3({
       //   accessKeyId : process.env.ACCESS_KEY,
       //   secretAccessKey : process.env.SECRET_KEY
       // });
-      // const uploadFile = (fileName)=>{
-      //   const fileContent = fs.readFileSync(fileName);
-      //   const param = {
-      //     'Bucket':'graduate-project-lgh',
-      //     'Key': this.formData.filename,//filename you want to save in s3
-      //     'Body':fileContent,//absolute path in local
-      //   };
-      //   s3.upload(param, function(err, data){
-      //     if(err) {
-      //       console.log(err);
-      //     }
-      //     console.log(`File upload success +${data.Location}`);
-      //   });
-      // }
+      //
+      // const fileContent = this.fileObj;
+      // const param = {
+      //   'Bucket':'graduate-project-lgh',
+      //   'Key': this.formData.filename,//filename you want to save in s3
+      //   'ACL': 'public-read',
+      //   'Body':fileContent,//absolute path in local
+      // };
+      // console.log('Request Parameter ');
+      // console.log(param);
+      // await s3.upload(param, function(err, data){
+      //   if(err) {
+      //     console.log(err);
+      //   }
+      //   console.log(`File upload success +${data.Location}`);
+      // });
 
-      //add post to firebase
-      await this.$fire.firestore.collection(`posts`).
-      add(this.formData);
+      if(!this.fileObj) {
+        return alert('파일을 선택해주세요.');
+      }
+
+      const storageRef = this.$fire.storage.ref(`files/${this.fileObj.name}`);
+      const uploadTask = storageRef.put(this.fileObj);
+      this.isUploading = true;
+      const self = this;
+
+      uploadTask.on('state_changed', async function(snapshot){
+        // Observe state change events such as progress, pause, and resume
+        // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+
+        console.log('Upload is ' + progress + '% done');
+        switch (snapshot.state) {
+          case self.$fireModule.storage.TaskState.PAUSED: // or 'paused'
+            console.log('Upload is paused');
+            break;
+          case self.$fireModule.storage.TaskState.RUNNING: // or 'running'
+            console.log('Upload is running');
+            break;
+        }
+      }, function(error) {
+        // Handle unsuccessful uploads
+        alert('error');
+        this.isUploading = false;
+      }, async function() {
+        console.log('success!');
+        // Handle successful uploads on complete
+        // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+        console.log(uploadTask.snapshot.ref.fullPath);
+
+        self.formData.path = uploadTask.snapshot.ref.fullPath;
+
+        //add post to firebase
+        await self.$fire.firestore.collection(`posts`).
+        add(self.formData);
+
+        this.isUploading = false;
+
+        uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
+          console.log('File available at', downloadURL);
+        });
+      });
 
       await this.$router.push('/board');
     }
