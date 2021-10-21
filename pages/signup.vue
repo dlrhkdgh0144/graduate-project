@@ -62,6 +62,10 @@ export default {
           this.formData.email,
           this.formData.password,
         )
+        if(this.formData.nickname===''){
+          let splitResult = this.formData.email.split('@');
+          this.formData.nickname = splitResult[0];
+        }
         await userCredential.user.updateProfile({
             displayName: this.formData.nickname,
           }

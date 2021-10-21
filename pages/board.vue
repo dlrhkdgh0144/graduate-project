@@ -1,6 +1,6 @@
 <template>
   <v-app justify="center">
-    <v-row style="height: 100px">
+    <v-row>
       <h2 style="margin-top: 20px">데이터 목록</h2>
       <v-spacer></v-spacer>
       <input placeholder="제목"
@@ -13,26 +13,18 @@
     </v-row>
     <v-row>
       <v-simple-table class="post-list">
-        <thread>
-          <tr>
-            <th>번호</th>
-            <th>제목</th>
-            <th>작성자</th>
-            <th>다운로드</th>
-          </tr>
-        </thread>
+        <tr style="text-align: left">
+          <th>번호</th>
+          <th>제목</th>
+          <th>작성자</th>
+          <th>날짜</th>
+        </tr>
         <tbody>
-          <tr>
-            <td>1</td>
-            <td>Terraforming Mars</td>
-            <td>Jacob Fryxelius</td>
-            <td>ㅇㅇ</td>
-          </tr>
-          <tr>
-            <td>2</td>
-            <td>Gloomhaven: Jaws of the Lion</td>
-            <td>Uve</td>
-            <td>down</td>
+          <tr v-for="(posts,index) in postlist">
+            <td>{{postlist.length-index}}</td>
+            <td>{{ posts.data().title }}</td>
+            <td>{{ posts.data().writer }}</td>
+            <td>{{ convertTime(posts.data().timestamp) }}</td>
           </tr>
         </tbody>
       </v-simple-table>
@@ -51,6 +43,9 @@ import firebase from "firebase";
 
 export default {
   name: "board",
+  data: () => ({
+    postlist : [],
+  }),
   computed: {
     ...mapState({
       authUser: state => state.authUser,
@@ -58,6 +53,14 @@ export default {
     ...mapGetters({
       isLoggedIn: 'isLoggedIn',
     }),
+  },
+  created() {
+    this.$fire.firestore.
+    collection(`posts`).orderBy('timestamp',"desc").onSnapshot((async querySnapshot => {
+      console.log(querySnapshot.docs.length);
+      this.postlist = querySnapshot.docs;
+      console.log(this.postlist[0]);
+    }));
   },
   methods : {
     posting() {
@@ -68,6 +71,12 @@ export default {
         this.$router.push('/login');
       }
     },
+    convertTime(tstamp){
+      let date = new Date(tstamp*1000);
+      console.log('Time stamp is '+date);
+      let result = (date.getFullYear()-1969)+'.'+(date.getMonth()+1)+'.'+date.getDate();
+      return result;
+    }
   }
 }
 </script>
@@ -83,6 +92,6 @@ export default {
   width: 10px;
 }
 .post-list{
-  width: 100%;
+  width: 90%;
 }
 </style>
