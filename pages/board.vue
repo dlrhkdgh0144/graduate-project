@@ -12,7 +12,10 @@
       </v-btn>
     </v-row>
     <v-row>
-      <Detailpost :isPostviewed="this.isDetailviewed">
+      <Detailpost :isPostviewed="this.isDetailviewed"
+                  :postDetail="this.selectedPost"
+                  ref="postPopup"
+      >
       </Detailpost>
       <v-simple-table class="post-list">
         <tr style="text-align: left">
@@ -42,7 +45,7 @@
 
 <script>
 import {mapGetters, mapState} from "vuex";
-import Detailpost from "../components/Detailpost";
+import Detailpost from '~/components/Detailpost.vue'
 
 export default {
   name: "board",
@@ -52,6 +55,7 @@ export default {
   data: () => ({
     postlist : [],
     isDetailviewed: false,
+    selectedPost: '',
   }),
   computed: {
     ...mapState({
@@ -80,14 +84,13 @@ export default {
     },
     convertTime(tstamp){
       let date = new Date(tstamp*1000);
-      console.log('Time stamp is '+date);
       let result = (date.getFullYear()-1969)+'.'+(date.getMonth()+1)+'.'+date.getDate();
       return result;
     },
     toDetail(posts){
-      console.log(posts.data());
       this.isDetailviewed = true;
-      //this.$router.push(`/detail/${posts.id}`);
+      this.selectedPost = posts.id;
+      this.$refs.postPopup.queryPost(posts.id);
     },
   }
 }
