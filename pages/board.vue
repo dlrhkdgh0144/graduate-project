@@ -1,7 +1,7 @@
 <template>
   <v-app justify="center">
-    <v-row>
-      <h2 style="margin-top: 20px">데이터 목록</h2>
+    <v-row style="margin-top: 40px">
+      <h2>데이터 목록</h2>
       <v-spacer></v-spacer>
       <input placeholder="제목"
              class="search-bar"
@@ -12,6 +12,8 @@
       </v-btn>
     </v-row>
     <v-row>
+      <Detailpost :isPostviewed="this.isDetailviewed">
+      </Detailpost>
       <v-simple-table class="post-list">
         <tr style="text-align: left">
           <th>번호</th>
@@ -20,15 +22,16 @@
           <th>날짜</th>
         </tr>
         <tbody>
-          <tr v-for="(posts,index) in postlist">
+          <tr v-for="(posts,index) in postlist"
+          >
             <td>{{postlist.length-index}}</td>
-            <td>{{ posts.data().title }}</td>
+            <td @click="toDetail(posts)"
+            >{{ posts.data().title }}</td>
             <td>{{ posts.data().writer }}</td>
             <td>{{ convertTime(posts.data().timestamp) }}</td>
           </tr>
         </tbody>
       </v-simple-table>
-
     </v-row>
     <v-row>
       <v-btn @click="posting"
@@ -39,12 +42,16 @@
 
 <script>
 import {mapGetters, mapState} from "vuex";
-import firebase from "firebase";
+import Detailpost from "../components/Detailpost";
 
 export default {
   name: "board",
+  components: {
+    Detailpost,
+  },
   data: () => ({
     postlist : [],
+    isDetailviewed: false,
   }),
   computed: {
     ...mapState({
@@ -59,7 +66,7 @@ export default {
     collection(`posts`).orderBy('timestamp',"desc").onSnapshot((async querySnapshot => {
       console.log(querySnapshot.docs.length);
       this.postlist = querySnapshot.docs;
-      console.log(this.postlist[0]);
+      console.log(this.postlist[0].id);
     }));
   },
   methods : {
@@ -76,14 +83,20 @@ export default {
       console.log('Time stamp is '+date);
       let result = (date.getFullYear()-1969)+'.'+(date.getMonth()+1)+'.'+date.getDate();
       return result;
-    }
+    },
+    toDetail(posts){
+      console.log(posts.data());
+      this.isDetailviewed = true;
+      //this.$router.push(`/detail/${posts.id}`);
+    },
   }
 }
 </script>
 
 <style scoped>
 .search-bar{
-  border: black 1px;
+  border: black 1px solid;
+  border-radius: 5px;
   margin-top: 20px;
   height: 30px;
 }

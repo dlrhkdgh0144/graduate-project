@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-row>
-      <h2 style="margin-top: 20px">데이터 공유</h2>
+      <h2 style="margin-top: 40px">데이터 공유</h2>
     </v-row>
     <v-row>
       <h3>제목</h3><br>
@@ -24,7 +24,8 @@
         label="파일선택" color="blue"
         @change="onFileSelect"
       />
-      <v-btn>업로드</v-btn>
+    </v-row>
+    <v-row>
       <v-btn @click="uploadPost"
       >게시</v-btn>
     </v-row>
