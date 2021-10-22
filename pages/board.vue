@@ -84,7 +84,8 @@ export default {
     },
     convertTime(tstamp){
       let date = new Date(tstamp*1000);
-      let result = (date.getFullYear()-1969)+'.'+(date.getMonth()+1)+'.'+date.getDate();
+      let result = (date.getFullYear()-1969)+'.'+String(date.getMonth()+1).padStart(2,"0")
+        +'.'+String(date.getDate()).padStart(2,"0");
       return result;
     },
     toDetail(posts){

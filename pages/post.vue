@@ -27,6 +27,7 @@
     </v-row>
     <v-row>
       <v-btn @click="uploadPost"
+             color="primary"
       >게시</v-btn>
     </v-row>
   </v-app>
