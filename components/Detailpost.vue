@@ -74,11 +74,6 @@ export default {
       return result;
     },
     downloadFile(){
-      // let btnObj = document.getElementById("downloadBtn");
-      // btnObj.setAttribute("href",this.fileUrls);
-      // //btnObj.href = this.fileUrls;
-      // btnObj.download = this.postFile;
-
       // let xhr = new XMLHttpRequest();
       // xhr.responseType = 'blob';
       // xhr.onload = function(event) {

@@ -48,11 +48,21 @@
       >
         <v-icon>mdi-minus</v-icon>
       </v-btn>
+      <v-spacer/>
       <v-btn
         icon
         @click="$router.push('/')"
       >
         <v-icon>mdi-home</v-icon>
+        Home
+      </v-btn>
+      <v-spacer/>
+      <v-btn
+        icon
+        @click="$router.push('/board')"
+      >
+        <v-icon>mdi-clipboard-outline</v-icon>
+        Board
       </v-btn>
       <v-spacer/>
       <div v-if="!isLoggedIn" onsubmit="return false;">
@@ -118,7 +128,7 @@ export default {
       items: [
         {
           icon: 'mdi-home',
-          title: 'Main',
+          title: 'Home',
           to: '/'
         },
         {
